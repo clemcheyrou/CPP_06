@@ -18,26 +18,36 @@ ScalarConverter::ScalarConverter()
 {
 	std::cout << "Constructer called" << std::endl;
 	return;
-};
+}
 
 ScalarConverter::ScalarConverter(ScalarConverter const &copy)
 {
 	*this = copy;
 	return;
-};
+}
 
 ScalarConverter::~ScalarConverter()
 {
 	std::cout << "Destructor called" << std::endl;
 	return;
-};
+}
 
 ScalarConverter &ScalarConverter::operator=(ScalarConverter const &rhs)
 {
 	if (this != &rhs)
 		*this = rhs;
 	return (*this);
-};
+}
+
+int	ScalarConverter::nbComa(std::string &type)
+{
+    int count = 0;
+    for (size_t i = 0; (i = type.find('.', i)) != std::string::npos; i++)
+	{
+        count++;
+	}
+	return (count);
+}
 
 bool ScalarConverter::isChar(std::string &type)
 {
@@ -57,7 +67,7 @@ bool ScalarConverter::isChar(std::string &type)
 	}
 	else
 		return (false);
-};
+}
 
 bool ScalarConverter::isInt(std::string &type)
 {
@@ -73,22 +83,26 @@ bool ScalarConverter::isInt(std::string &type)
 		else
 			std::cout << "char : impossible" << std::endl;
 		std::cout << "int : " << i << std::endl;
-		std::cout << "float : " << std::fixed << std::setprecision(2) << static_cast<float>(i) << "f" << std::endl;
-		std::cout << "double : " << std::fixed << std::setprecision(2) << static_cast<double>(i) << std::endl;
+		std::cout << "float : " << std::fixed << std::setprecision(1) << static_cast<float>(i) << "f" << std::endl;
+		std::cout << "double : " << std::fixed << std::setprecision(1) << static_cast<double>(i) << std::endl;
 		return (true);
 	}
 	else if ((i >= 2147483647 || i <= -2147483648) && type.find(".") == std::string::npos)
 		return (std::cout << "overflow" << std::endl, true);
 	else
 		return (false);
-};
+}
 
 bool ScalarConverter::isFloat(std::string &type)
 {
-	std::string tmp;
-	tmp = type;
+	std::string tmp = type;
+	int	i = 0;
+
 	if (tmp.substr(tmp.size() - 1) == "f" && tmp.find(".") != std::string::npos)
+	{
 		type = type.substr(0, type.size() - 1);
+		i = type.substr(type.find(".")).size() > 6 ? 6 : type.substr(type.find(".")).size() - 1;
+	}
 	else
 		return (false);
 	std::istringstream iss(type);
@@ -106,20 +120,23 @@ bool ScalarConverter::isFloat(std::string &type)
 			std::cout << "int : impossible" << std::endl;
 		else
 			std::cout << "int : " << static_cast<int>(f) << std::endl;
-		std::cout << "float : " << std::fixed << std::setprecision(2) << f << "f" << std::endl;
-		std::cout << "double : " << std::fixed << std::setprecision(2) << static_cast<double>(f) << std::endl;
+		std::cout << "float : " << std::fixed << std::setprecision(i) << f << "f" << std::endl;
+		std::cout << "double : " << std::fixed << std::setprecision(i) << static_cast<double>(f) << std::endl;
 		return (true);
 	}
-	else if (f < FLT_MAX || f > FLT_MIN)
+	else if ((f < FLT_MAX || f > -FLT_MAX) && type.find_first_not_of("0123456789.") == std::string::npos && nbComa(type) == 1)
 		return (std::cout << "overflow" << std::endl, true);
 	else
 		return (false);
-};
+}
 
 bool ScalarConverter::isDouble(std::string &type)
 {
+	int i = 0;
 	if (type.find(".") == std::string::npos)
 		return (false);
+	else
+		i = type.substr(type.find(".")).size() > 6 ? 6 : type.substr(type.find(".")).size() - 1;
 	std::istringstream iss(type);
 	double d;
 	if ((iss >> d) && (iss.eof()))
@@ -135,23 +152,22 @@ bool ScalarConverter::isDouble(std::string &type)
 			std::cout << "int : impossible" << std::endl;
 		else
 			std::cout << "int : " << static_cast<int>(d) << std::endl;
-		if (static_cast<float>(d) <= FLT_MIN || static_cast<int>(d) >= FLT_MAX)
+		if (static_cast<float>(d) <= -FLT_MAX || static_cast<int>(d) >= FLT_MAX)
 			std::cout << "float : impossible" << std::endl;
 		else
-			std::cout << "float : " << std::fixed << std::setprecision(2) << static_cast<float>(d) << "f" << std::endl;
-		std::cout << "double : " << std::fixed << std::setprecision(2) << d << std::endl;
+			std::cout << "float : " << std::fixed << std::setprecision(i) << static_cast<float>(d) << "f" << std::endl;
+		std::cout << "double : " << std::fixed << std::setprecision(i) << d << std::endl;
 		return (true);
 	}
-	else if (d < DBL_MAX || d > DBL_MIN)
+	else if ((d < DBL_MAX || d > DBL_MIN) && type.find_first_not_of("0123456789.") == std::string::npos && nbComa(type) == 1)
 		return (std::cout << "overflow" << std::endl, true);
 	return (false);
-};
+}
 
 bool ScalarConverter::isPseudoLit(std::string &type)
 {
 	if (type == "nan" || type == "-inf" || type == "+inf")
 	{
-		std::cout << "It's impossible" << std::endl;
 		std::cout << "char : impossible" << std::endl;
 		std::cout << "int : impossible" << std::endl;
 		std::cout << "float : " << type << "f" << std::endl;
@@ -160,7 +176,6 @@ bool ScalarConverter::isPseudoLit(std::string &type)
 	}
 	if (type == "nanf" || type == "-inff" || type == "+inff")
 	{
-		std::cout << "It's impossible" << std::endl;
 		std::cout << "char : impossible" << std::endl;
 		std::cout << "int : impossible" << std::endl;
 		std::cout << "float : " << type << std::endl;
@@ -168,7 +183,7 @@ bool ScalarConverter::isPseudoLit(std::string &type)
 		return (true);
 	}
 	return (false);
-};
+}
 
 void ScalarConverter::convert(std::string type)
 {
@@ -184,4 +199,4 @@ void ScalarConverter::convert(std::string type)
 		return;
 	else
 		return (std::cout << "Wrong input" << std::endl, (void)0);
-};
+}

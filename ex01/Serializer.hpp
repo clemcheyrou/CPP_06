@@ -6,7 +6,7 @@
 /*   By: ccheyrou <ccheyrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 18:39:58 by ccheyrou          #+#    #+#             */
-/*   Updated: 2023/05/23 21:16:02 by ccheyrou         ###   ########.fr       */
+/*   Updated: 2023/08/25 16:30:48 by ccheyrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,16 @@ struct Data
 
 class Serializer
 {
-private:
+	public:
 
-public:
+		Serializer();
+		Serializer(Serializer const &copy);
+		~Serializer();
 
-	Serializer( void );
-	Serializer( Serializer const &copy );
-	~Serializer( void );
+		Serializer& operator=( Serializer const & rhs );
 
-	Serializer& operator=( Serializer const & rhs );
-
-	static uintptr_t serialize(Data* ptr);
-	static Data* deserialize(uintptr_t raw);
+		static uintptr_t serialize(Data* ptr);
+		static Data* deserialize(uintptr_t raw);
 };
 
 #endif

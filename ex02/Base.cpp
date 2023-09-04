@@ -6,7 +6,7 @@
 /*   By: ccheyrou <ccheyrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 22:52:50 by ccheyrou          #+#    #+#             */
-/*   Updated: 2023/05/23 23:11:56 by ccheyrou         ###   ########.fr       */
+/*   Updated: 2023/08/25 16:48:52 by ccheyrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,22 @@ void	Base::identify(Base* p)
 
 void	Base::identify(Base& p)
 {
-	identify(&p);
+	try
+	{
+		p = dynamic_cast<A &>(p);
+		std::cout<<"Le type est A"<<std::endl;
+	}
+	catch(const std::exception& e) {}
+	try
+	{
+		p = dynamic_cast<B &>(p);
+		std::cout<<"Le type est B"<<std::endl;
+	}
+	catch(const std::exception& e) {}
+	try
+	{
+		p = dynamic_cast<C &>(p);
+		std::cout<<"Le type est C"<<std::endl;
+	}
+	catch(const std::exception& e) {}
 }
